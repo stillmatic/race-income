@@ -1,11 +1,10 @@
 /****** SQL QUERY - Latino
 		Chris Hua / @stillmatic
   ******/
-SELECT	[demo].[GEO#id] AS 'Geo Code'
-		,[demo].[GEO#id2] AS 'Geo ID'
-		,[demo].[GEO#display-label] AS 'CSA'
+SELECT	CONCAT([demo].[GEO#id2],'-Latino') AS 'Stat ID'
+		/*,[demo].[GEO#display-label] AS 'CSA'
 		,[demo].[HD01_VD01] AS 'Pop - Tot'
-		,[english-Latino].[Estimate; Total:] AS 'Pop - Latino'
+		,[english-Latino].[Estimate; Total:] AS 'Pop - Latino'*/
 		,0 AS 'Asian'
 		,0 AS 'Black'
 		,1 AS 'Latino'
@@ -17,15 +16,20 @@ SELECT	[demo].[GEO#id] AS 'Geo Code'
 			+ [english-Latino].[Estimate; Foreign born: - Speak only English] 
 			+ [english-Latino].[Estimate; Foreign born: - Speak another language - Speak English]) / [english-Latino].[Estimate; Total:]
 			AS ' % Eng - Good'
+		, ([Estimate; Male: - Worked full-time, year-round in the past 12 mo] +
+		   [Estimate; Female: - Worked full-time, year-round in the past 12 ])/[employment_hispanic].[Estimate; Total:] 
+			AS '% Full-time'
 
 FROM [ESE].[dbo].[demo], 
 	[ESE].[dbo].[med-income-Latino],
 	[ESE].[dbo].[edu-Latino],
-	[ESE].[dbo].[english-Latino]
+	[ESE].[dbo].[english-Latino],
+	[ESE].[dbo].[employment_hispanic]
 
 WHERE 
 	[demo].[GEO#ID] = [edu-Latino].[id]
 	AND [demo].[geo#id] = [med-income-Latino].[id]
 	AND [demo].[GEO#id] = [english-Latino].[id]
+	AND [demo].[GEO#id] = [employment_hispanic].[id]
 
 ORDER BY [demo].GEO#id2
